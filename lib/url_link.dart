@@ -31,6 +31,10 @@ class UrlLink {
   StreamSubscription? _subscription;
   StreamController<String>? _streamController;
 
+  Future<String?> getLasteLinkUrl() async {
+    return _channel.invokeMethod("getLastUrl") as String?;
+  }
+
   Stream<String> registerUrlLink() {
     _streamController ??= StreamController();
     _subscription = _eventChannel.listen((event) {

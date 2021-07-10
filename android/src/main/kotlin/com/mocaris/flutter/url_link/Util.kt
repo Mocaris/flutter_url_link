@@ -8,11 +8,13 @@ const val BROADCAST_ACTION = "url_link_action"
 
 object UrlLinkUtil {
     fun sendPlugin(context: Context, intent: Intent) {
-        intent.data?.let {
-            val newIntent = Intent(BROADCAST_ACTION).apply {
-                this.putExtra("data", it.toString())
+        if(Intent.ACTION_VIEW == intent.action){
+            intent.data?.let {
+                val newIntent = Intent(BROADCAST_ACTION).apply {
+                    this.putExtra("data", it.toString())
+                }
+                LocalBroadcastManager.getInstance(context).sendBroadcast(newIntent)
             }
-            LocalBroadcastManager.getInstance(context).sendBroadcast(newIntent)
         }
     }
 }

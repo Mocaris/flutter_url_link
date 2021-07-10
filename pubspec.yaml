@@ -1,6 +1,6 @@
-name: flutter_url_link
+name: url_link
 description: url scheme open app
-version: 0.0.1
+version: 0.0.2
 homepage:
 
 environment:

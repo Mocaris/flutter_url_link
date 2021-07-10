@@ -1,9 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:url_link/url_link.dart';
 
 void main() {
-  const MethodChannel channel = MethodChannel('url_link');
+  const MethodChannel channel = MethodChannel('mocaris_url_link');
 
   TestWidgetsFlutterBinding.ensureInitialized();
 

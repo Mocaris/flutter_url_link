@@ -1,5 +1,6 @@
 package com.mocaris.flutter.url_link
 
+import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -36,6 +37,8 @@ class UrlLinkPlugin : BroadcastReceiver(), FlutterPlugin, MethodCallHandler,
     private lateinit var eventChannel: EventChannel
     private var eventSink: EventChannel.EventSink? = null
 
+    private var lastUrl: String? = null
+
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, Constant.URL_LINK_NAME)
         channel.setMethodCallHandler(this)
@@ -48,6 +51,14 @@ class UrlLinkPlugin : BroadcastReceiver(), FlutterPlugin, MethodCallHandler,
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
+        when (call.method) {
+            "getLastUrl" -> {
+                result.success(lastUrl)
+            }
+            else -> {
+                result.notImplemented()
+            }
+        }
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
@@ -58,6 +69,7 @@ class UrlLinkPlugin : BroadcastReceiver(), FlutterPlugin, MethodCallHandler,
     override fun onReceive(context: Context?, intent: Intent) {
         if (BROADCAST_ACTION == intent.action) {
             intent.getStringExtra("data")?.let {
+                this.lastUrl = it
                 eventSink?.success(it)
             }
         }
