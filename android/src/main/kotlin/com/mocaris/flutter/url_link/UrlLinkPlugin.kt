@@ -63,7 +63,7 @@ class UrlLinkPlugin : BroadcastReceiver(), FlutterPlugin, MethodCallHandler,
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
-        binding.applicationContext.unregisterReceiver(this)
+        LocalBroadcastManager.getInstance(binding.applicationContext).unregisterReceiver(this)
     }
 
     override fun onReceive(context: Context?, intent: Intent) {
