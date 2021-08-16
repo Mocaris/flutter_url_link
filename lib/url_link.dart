@@ -35,9 +35,7 @@ Future _methodHandler(MethodCall call) {
 }
 
 class UrlLink {
-  Future<String?> getLastLinkUri() async {
-    return _channel.invokeMethod("getLastUri") as String?;
-  }
+  Future<String?> get getLastLinkUri async => _channel.invokeMethod("getLastUri") as String?;
 
   Stream<String> get listenUrlLink => _handlerController.stream;
 }
