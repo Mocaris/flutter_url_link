@@ -16,7 +16,7 @@ class UrlLinkPlugin : FlutterPlugin, MethodCallHandler {
         //插件
         const val URL_LINK_NAME = "mocaris_url_link"
 
-        var instance: UrlLinkPlugin? = null
+        private var instance: UrlLinkPlugin? = null
 
         fun setDataUri(intent: Intent) {
             instance?.setDataUri(intent.dataString)
@@ -28,12 +28,7 @@ class UrlLinkPlugin : FlutterPlugin, MethodCallHandler {
         instance = this
     }
 
-
-    /// The MethodChannel that will the communication between Flutter and native Android
-    ///
-    /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-    /// when the Flutter Engine is detached from the Activity
-    private var channel: MethodChannel?=null
+    private var channel: MethodChannel? = null
 
     private var lastUri: String? = null
 

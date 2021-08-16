@@ -17,16 +17,13 @@ public class SwiftUrlLinkPlugin: NSObject, FlutterPlugin {
 
     private var isRegister = false
 
-    var _channel: FlutterMethodChannel
+    private var _channel: FlutterMethodChannel
 
-    var _lastUri: String?
+    private var _lastUri: String?
 
     func setDataUri(url: String?) -> Bool {
         if url != nil {
-            let key = "lastUrlKey"
-            willChangeValue(forKey: key)
             _lastUri = url
-            didChangeValue(forKey: key)
             if isRegister {
                 _channel.invokeMethod("receive_uri", arguments: _lastUri!)
             }
@@ -45,6 +42,7 @@ public class SwiftUrlLinkPlugin: NSObject, FlutterPlugin {
     }
 
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        _lastUri = nil
         isRegister = false
         return nil
     }
