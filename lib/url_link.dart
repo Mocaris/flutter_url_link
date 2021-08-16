@@ -20,14 +20,24 @@ import 'package:flutter/services.dart';
 //                 <category android:name="android.intent.category.DEFAULT" />
 //                 <category android:name="android.intent.category.BROWSABLE" />
 //             </intent-filter>
-final MethodChannel _channel = MethodChannel('mocaris_url_link')..setMethodCallHandler((call) => _methodHandler(call));
+final MethodChannel _channel = MethodChannel('mocaris_url_link')..setMethodCallHandler(_methodHandler);
 
 final StreamController<String> _handlerController = StreamController.broadcast();
+
+Future _methodHandler(MethodCall call) {
+  switch (call.method) {
+    case "receive_uri":
+      print("UrlLink receive uri:${call.arguments}");
+      break;
+  }
+  _handlerController.add(call.arguments);
+  return Future.value();
+}
 
 class UrlLink {
   StreamSubscription? _subscription;
 
-  Future<String?> getLasteLinkUrl() async {
+  Future<String?> getLastLinkUri() async {
     return _channel.invokeMethod("getLastUri") as String?;
   }
 
@@ -38,13 +48,4 @@ class UrlLink {
   dispose() {
     _subscription?.cancel();
   }
-}
-
-_methodHandler(MethodCall call) {
-  switch (call.method) {
-    case "receive_uri":
-      print("UrlLink receive uri:${call.arguments}");
-      break;
-  }
-  _handlerController..add(call.arguments);
 }
