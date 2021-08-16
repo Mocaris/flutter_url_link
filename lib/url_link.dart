@@ -39,7 +39,5 @@ class UrlLink {
     return _channel.invokeMethod("getLastUri") as String?;
   }
 
-  Stream<String> listenUrlLink() {
-    return _handlerController.stream;
-  }
+  Stream<String> get listenUrlLink => _handlerController.stream;
 }
