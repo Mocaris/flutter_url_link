@@ -1,48 +1,51 @@
 import Flutter
 import UIKit
 
-public class SwiftUrlLinkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
+public class SwiftUrlLinkPlugin: NSObject, FlutterPlugin {
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "mocaris_url_link", binaryMessenger: registrar.messenger())
-        let instance = SwiftUrlLinkPlugin()
+        let instance = SwiftUrlLinkPlugin(channle: channel)
         registrar.addMethodCallDelegate(instance, channel: channel)
-        let eventChannel = FlutterEventChannel(name: "mocaris_url_link_stream", binaryMessenger: registrar.messenger())
-        eventChannel.setStreamHandler(instance)
         registrar.addApplicationDelegate(instance)
     }
 
-    var _lastUrl: String?
+    public init(channle: FlutterMethodChannel) {
+        _channel = channle
+        isRegister = true
+        super.init()
+    }
 
-    private var eventSink: FlutterEventSink?
+    private var isRegister = false
 
-    func setLasteUrl(url: String) -> Bool {
-        let key = "lastUrlKey"
-        willChangeValue(forKey: key)
-        _lastUrl = url
-        didChangeValue(forKey: key)
-        if eventSink == nil {
-            return false
+    var _channel: FlutterMethodChannel
+
+    var _lastUri: String?
+
+    func setDataUri(url: String?) -> Bool {
+        if url != nil {
+            let key = "lastUrlKey"
+            willChangeValue(forKey: key)
+            _lastUri = url
+            didChangeValue(forKey: key)
+            if isRegister {
+                _channel.invokeMethod("receive_uri", arguments: _lastUri!)
+            }
+            return true
         }
-        eventSink?(url)
-        return true
+        return false
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
-        case "getLastUrl":
-            result(_lastUrl)
+        case "getLastUri":
+            result(_lastUri)
         default:
             result(FlutterMethodNotImplemented)
         }
     }
 
-    public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
-        eventSink = events
-        return nil
-    }
-
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
-        eventSink = nil
+        isRegister = false
         return nil
     }
 
@@ -51,7 +54,7 @@ public class SwiftUrlLinkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
         if type == NSUserActivityTypeBrowsingWeb {
             let url = userActivity.webpageURL?.absoluteString
             if url != nil {
-                return setLasteUrl(url: url!)
+                return setDataUri(url: url!)
             }
         }
         return true
@@ -62,18 +65,18 @@ public class SwiftUrlLinkPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
         if url == nil {
             return false
         }
-        return setLasteUrl(url: url!.absoluteString)
+        return setDataUri(url: url!.absoluteString)
     }
 
     public func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
-        return setLasteUrl(url: url.absoluteString)
+        return setDataUri(url: url.absoluteString)
     }
 
     public func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        return setLasteUrl(url: url.absoluteString)
+        return setDataUri(url: url.absoluteString)
     }
 
     public func application(_ application: UIApplication, open url: URL, sourceApplication: String, annotation: Any) -> Bool {
-        return setLasteUrl(url: url.absoluteString)
+        return setDataUri(url: url.absoluteString)
     }
 }
