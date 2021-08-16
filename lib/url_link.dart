@@ -20,7 +20,8 @@ import 'package:flutter/services.dart';
 //                 <category android:name="android.intent.category.DEFAULT" />
 //                 <category android:name="android.intent.category.BROWSABLE" />
 //             </intent-filter>
-final MethodChannel _channel = MethodChannel('mocaris_url_link')..setMethodCallHandler(_methodHandler);
+
+final MethodChannel _methodChannel = MethodChannel('mocaris_url_link');
 
 final StreamController<String> _handlerController = StreamController.broadcast();
 
@@ -35,7 +36,11 @@ Future _methodHandler(MethodCall call) {
 }
 
 class UrlLink {
-  Future<String?> get getLastLinkUri async => _channel.invokeMethod("getLastUri") as String?;
+  UrlLink() {
+    _methodChannel.setMethodCallHandler((call) => _methodHandler(call));
+  }
+
+  Future<String?> get getLastLinkUri async => (await _methodChannel.invokeMethod("getLastUri"))?.toString();
 
   Stream<String> get listenUrlLink => _handlerController.stream;
 }

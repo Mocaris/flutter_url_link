@@ -2,7 +2,6 @@ package com.mocaris.flutter.url_link
 
 import android.content.Intent
 import androidx.annotation.NonNull
-
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -40,6 +39,7 @@ class UrlLinkPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        instance = this
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, URL_LINK_NAME).also {
             it.setMethodCallHandler(this)
         }
