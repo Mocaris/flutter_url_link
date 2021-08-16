@@ -35,17 +35,11 @@ Future _methodHandler(MethodCall call) {
 }
 
 class UrlLink {
-  StreamSubscription? _subscription;
-
   Future<String?> getLastLinkUri() async {
     return _channel.invokeMethod("getLastUri") as String?;
   }
 
-  Stream<String> registerUrlLink() {
+  Stream<String> listenUrlLink() {
     return _handlerController.stream;
-  }
-
-  dispose() {
-    _subscription?.cancel();
   }
 }
