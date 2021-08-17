@@ -10,26 +10,20 @@ public class SwiftUrlLinkPlugin: NSObject, FlutterPlugin {
     }
 
     public init(channle: FlutterMethodChannel) {
-        _channel = channle
-        isRegister = true
+        self._channel = channle
         super.init()
     }
-
-    private var isRegister = false
 
     private var _channel: FlutterMethodChannel
 
     private var _lastUri: String?
 
-    func setDataUri(url: String?) -> Bool {
+    func setDataUri(url: String?) {
+        debugPrint("url_link receive url:\(url ?? "")")
         if url != nil {
             _lastUri = url
-            if isRegister {
-                _channel.invokeMethod("receive_uri", arguments: _lastUri!)
-            }
-            return true
+            _channel.invokeMethod("receive_uri", arguments: _lastUri!)
         }
-        return false
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -43,38 +37,41 @@ public class SwiftUrlLinkPlugin: NSObject, FlutterPlugin {
 
     public func onCancel(withArguments arguments: Any?) -> FlutterError? {
         _lastUri = nil
-        isRegister = false
         return nil
     }
 
     public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([Any]) -> Void) -> Bool {
         let type = userActivity.activityType
         if type == NSUserActivityTypeBrowsingWeb {
-            let url = userActivity.webpageURL?.absoluteString
-            if url != nil {
-                return setDataUri(url: url!)
+            guard let url = userActivity.webpageURL?.absoluteString else {
+                return false
             }
+            setDataUri(url: url)
+            return true
         }
-        return true
+        return false
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [AnyHashable: Any] = [:]) -> Bool {
-        let url: URL? = launchOptions[UIApplication.LaunchOptionsKey.url] as? URL
-        if url == nil {
+        guard let url: URL = launchOptions[UIApplication.LaunchOptionsKey.url] as? URL else {
             return false
         }
-        return setDataUri(url: url!.absoluteString)
+        setDataUri(url: url.absoluteString)
+        return true
     }
 
     public func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
-        return setDataUri(url: url.absoluteString)
+        setDataUri(url: url.absoluteString)
+        return true
     }
 
     public func application(_ application: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        return setDataUri(url: url.absoluteString)
+        setDataUri(url: url.absoluteString)
+        return true
     }
 
     public func application(_ application: UIApplication, open url: URL, sourceApplication: String, annotation: Any) -> Bool {
-        return setDataUri(url: url.absoluteString)
+        setDataUri(url: url.absoluteString)
+        return true
     }
 }
