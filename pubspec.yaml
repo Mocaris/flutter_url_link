@@ -1,7 +1,7 @@
 name: url_link
 description: url scheme open app
 version: 0.0.9
-homepage:
+homepage: https://github.com/Mocaris/flutter_url_link
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
